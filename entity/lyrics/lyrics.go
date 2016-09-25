@@ -1,11 +1,13 @@
-package entity
+package lyrics
 
-type GetLyricsResponse struct {
-	Message LyricsMessage `json:"message"`
+import "github.com/fr05t1k/musixmatch/entity"
+
+type Response struct {
+	Message Message `json:"message"`
 }
-type LyricsMessage struct {
-	Header Header     `json:"header"`
-	Body   LyricsBody `json:"body"`
+type Message struct {
+	Header header.Header `json:"header"`
+	Body   LyricsBody    `json:"body"`
 }
 type LyricsBody struct {
 	Lyrics Lyrics `json:"lyrics"`

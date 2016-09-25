@@ -1,4 +1,4 @@
-package entity
+package track
 
 type Track struct {
 	Id uint32 `json:"track_id"`

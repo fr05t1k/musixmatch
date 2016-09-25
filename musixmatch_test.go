@@ -1,7 +1,6 @@
 package musixmatch
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
@@ -24,7 +23,14 @@ func TestGetLyrics(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.True(t, len(lyrics.Body) > 0)
-	fmt.Println(lyrics.Id)
-	fmt.Println(lyrics.Body)
-	fmt.Println(lyrics.Language)
+}
+
+func TestMusixMatch_GetSnippet(t *testing.T) {
+	mm := New(getApiKey())
+
+	expectedId := uint32(113303287)
+	snippet, err := mm.GetSnippet(expectedId)
+
+	assert.Nil(t, err)
+	assert.True(t, len(snippet.Body) > 0)
 }

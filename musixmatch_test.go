@@ -1,6 +1,7 @@
 package musixmatch
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
@@ -15,12 +16,15 @@ func getApiKey() string {
 }
 
 func TestGetLyrics(t *testing.T) {
-	mm := musixMatch{ApiKey: getApiKey()}
+
+	mm := New(getApiKey())
 
 	expectedId := uint32(113303287)
-	response, err := mm.getLyrics(expectedId)
+	lyrics, err := mm.GetLyrics(expectedId)
 
 	assert.Nil(t, err)
-	assert.Equal(t, uint16(200), response.Message.Header.StatusCode)
-	assert.True(t, len(response.Message.Body.Lyrics.Body) > 0)
+	assert.True(t, len(lyrics.Body) > 0)
+	fmt.Println(lyrics.Id)
+	fmt.Println(lyrics.Body)
+	fmt.Println(lyrics.Language)
 }

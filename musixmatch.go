@@ -18,7 +18,7 @@ func New(apiKey string) musixMatch {
 	return musixMatch{ApiKey: apiKey}
 }
 
-func (m *musixMatch) getLyrics(trackId uint32) (*entity.GetLyricsResponse, error) {
+func (m *musixMatch) GetLyrics(trackId uint32) (*entity.Lyrics, error) {
 	var lyricsResponse entity.GetLyricsResponse
 	params := url.Values{}
 	params.Add(config.ApiKey, m.ApiKey)
@@ -35,5 +35,5 @@ func (m *musixMatch) getLyrics(trackId uint32) (*entity.GetLyricsResponse, error
 		return nil, err
 	}
 
-	return &lyricsResponse, nil
+	return &lyricsResponse.Message.Body.Lyrics, nil
 }

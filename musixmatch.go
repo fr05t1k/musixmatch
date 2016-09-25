@@ -6,6 +6,7 @@ import (
 	"github.com/fr05t1k/musixmatch/config"
 	"github.com/fr05t1k/musixmatch/entity/lyrics"
 	"github.com/fr05t1k/musixmatch/entity/snippet"
+	"github.com/fr05t1k/musixmatch/entity/subtitle"
 	"github.com/fr05t1k/musixmatch/http"
 	"github.com/fr05t1k/musixmatch/http/methods"
 	"net/url"
@@ -21,8 +22,7 @@ func New(apiKey string) musixMatch {
 
 // Get the lyrics of a track.
 func (m *musixMatch) GetLyrics(trackId uint32) (*lyrics.Lyrics, error) {
-	params := url.Values{}
-	params.Add(config.ApiKey, m.ApiKey)
+	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
 
 	resp, err := http.SendRequest(http.GetURLString(methods.TrackLyricsGet, params))
@@ -46,12 +46,11 @@ func (m *musixMatch) GetLyrics(trackId uint32) (*lyrics.Lyrics, error) {
 // extracting a sequence of words from the lyrics.
 func (m *musixMatch) GetSnippet(trackId uint32) (*snippet.Snippet, error) {
 
-	params := url.Values{}
-	params.Add(config.ApiKey, m.ApiKey)
+	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
 	resp, err := http.SendRequest(http.GetURLString(methods.TrackSnippetGet, params))
 
-	var snippetResponse snippet.SnippetResponse
+	var snippetResponse snippet.Response
 	err = json.Unmarshal(resp, &snippetResponse)
 
 	if err != nil {
@@ -59,4 +58,30 @@ func (m *musixMatch) GetSnippet(trackId uint32) (*snippet.Snippet, error) {
 	}
 
 	return &snippetResponse.Message.Body.Snippet, nil
+}
+
+// Retrieve the subtitle of a track.
+//
+// Return the subtitle of a track in LRC or DFXP format.
+func (m *musixMatch) GetSubtitles(trackId uint32) (*subtitle.Subtitle, error) {
+
+	params := m.paramsWithApiKey()
+	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
+	resp, err := http.SendRequest(http.GetURLString(methods.TrackSubtitleGet, params))
+
+	var subtitleResponse subtitle.Response
+	err = json.Unmarshal(resp, &subtitleResponse)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &subtitleResponse.Message.Body.Subtitle, nil
+}
+
+// Retrieve the url.Values with predefined api key
+func (m *musixMatch) paramsWithApiKey() url.Values {
+	params := url.Values{}
+	params.Add(config.ApiKey, m.ApiKey)
+	return params
 }

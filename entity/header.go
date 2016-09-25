@@ -1,4 +1,4 @@
-package header
+package entity
 
 type Header struct {
 	StatusCode  uint16  `json:"status_code"`

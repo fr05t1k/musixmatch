@@ -5,10 +5,12 @@ import "github.com/fr05t1k/musixmatch/entity"
 type Response struct {
 	Message Message `json:"message"`
 }
+
 type Message struct {
-	Header header.Header `json:"header"`
+	Header entity.Header `json:"header"`
 	Body   LyricsBody    `json:"body"`
 }
+
 type LyricsBody struct {
 	Lyrics Lyrics `json:"lyrics"`
 }

@@ -34,3 +34,12 @@ func TestMusixMatch_GetSnippet(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, len(snippet.Body) > 0)
 }
+
+func TestMusixMatch_GetSubtitles(t *testing.T) {
+	mm := New(getApiKey())
+
+	expectedId := uint32(113303287)
+	subtitle, _ := mm.GetSubtitles(expectedId)
+
+	assert.Nil(t, subtitle)
+}

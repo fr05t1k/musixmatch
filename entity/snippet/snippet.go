@@ -2,15 +2,16 @@ package snippet
 
 import "github.com/fr05t1k/musixmatch/entity"
 
-type SnippetResponse struct {
-	Message SnippetMessage `json:"message"`
+type Response struct {
+	Message Message `json:"message"`
 }
 
-type SnippetMessage struct {
-	Body   SnippetBody   `json:"body"`
-	Header header.Header `json:"header"`
+type Message struct {
+	Body   Body          `json:"body"`
+	Header entity.Header `json:"header"`
 }
-type SnippetBody struct {
+
+type Body struct {
 	Snippet Snippet `json:"snippet"`
 }
 

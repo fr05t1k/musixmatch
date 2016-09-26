@@ -1,5 +1,28 @@
 package track
 
+import "github.com/fr05t1k/musixmatch/entity"
+
+type Response struct {
+	Message Message `json:"message"`
+}
+
+func (r *Response) GetMessage() Message {
+	return r.Message
+}
+
+type Message struct {
+	Body   Body          `json:"body"`
+	Header entity.Header `json:"header"`
+}
+
+type Body struct {
+	Tracks []TrackList `json:"track_list"`
+}
+
+type TrackList struct {
+	Track Track `json:"track"`
+}
+
 type Track struct {
 	Id uint32 `json:"track_id"`
 	// A MusicBrainz track identifier.
@@ -7,13 +30,13 @@ type Track struct {
 	// A Spotify track identifier
 	SpId string `json:"track_spotify_id"`
 	// A Soundcloud track identifier
-	ScId                 string `json:"track_soundcloud_id"`
+	ScId                 uint32 `json:"track_soundcloud_id"`
 	Rating               int32  `json:"track_rating"`
 	Length               int32  `json:"track_length"`
 	CommontrackId        uint32 `json:"commontrack_id"`
 	Explicit             uint32 `json:"explicit"`
-	HasLyrics            bool   `json:"has_lyrics"`
-	HasSubtitles         bool   `json:"has_subtitles"`
+	HasLyrics            uint8  `json:"has_lyrics"`
+	HasSubtitles         uint8  `json:"has_subtitles"`
 	NumFavorite          uint32 `json:"num_favourite"`
 	AlbumCoverArt100x100 string `json:"album_coverart_100x100"`
 	AlbumCoverArt350x350 string `json:"album_coverart_350x350"`
@@ -21,8 +44,9 @@ type Track struct {
 	AlbumCoverArt800x800 string `json:"album_coverart_800x800"`
 	EditUrl              string `json:"track_edit_url"`
 	UpdatedTime          string `json:"updated_time"`
-	AlbumId              string `json:"album_id"`
-	ArtistId             string `json:"album_name"`
+	AlbumId              uint32 `json:"album_id"`
+	AlbumName            string `json:"album_name"`
+	ArtistId             uint32 `json:"artist_id"`
 	ArtistMbId           string `json:"artist_mbid"`
 	ArtistName           string `json:"artist_name"`
 	ShareUrl             string `json:"track_share_url"`

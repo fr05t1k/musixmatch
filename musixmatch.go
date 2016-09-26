@@ -1,12 +1,12 @@
 package musixmatch
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/fr05t1k/musixmatch/config"
 	"github.com/fr05t1k/musixmatch/entity/lyrics"
 	"github.com/fr05t1k/musixmatch/entity/snippet"
 	"github.com/fr05t1k/musixmatch/entity/subtitle"
+	"github.com/fr05t1k/musixmatch/entity/track"
 	"github.com/fr05t1k/musixmatch/http"
 	"github.com/fr05t1k/musixmatch/http/methods"
 	"net/url"
@@ -25,12 +25,9 @@ func (m *musixMatch) GetLyrics(trackId uint32) (*lyrics.Lyrics, error) {
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
 
-	resp, err := http.SendRequest(http.GetURLString(methods.TrackLyricsGet, params))
-	if err != nil {
-		return nil, err
-	}
 	var lyricsResponse lyrics.Response
-	err = json.Unmarshal(resp, &lyricsResponse)
+	requestUrl := http.GetURLString(methods.TrackLyricsGet, params)
+	err := http.RequestEntity(requestUrl, &lyricsResponse)
 
 	if err != nil {
 		return nil, err
@@ -48,10 +45,9 @@ func (m *musixMatch) GetSnippet(trackId uint32) (*snippet.Snippet, error) {
 
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
-	resp, err := http.SendRequest(http.GetURLString(methods.TrackSnippetGet, params))
-
+	requestUrl := http.GetURLString(methods.TrackSnippetGet, params)
 	var snippetResponse snippet.Response
-	err = json.Unmarshal(resp, &snippetResponse)
+	err := http.RequestEntity(requestUrl, &snippetResponse)
 
 	if err != nil {
 		return nil, err
@@ -67,16 +63,40 @@ func (m *musixMatch) GetSubtitles(trackId uint32) (*subtitle.Subtitle, error) {
 
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
-	resp, err := http.SendRequest(http.GetURLString(methods.TrackSubtitleGet, params))
 
 	var subtitleResponse subtitle.Response
-	err = json.Unmarshal(resp, &subtitleResponse)
-
+	requestUrl := http.GetURLString(methods.TrackSubtitleGet, params)
+	err := http.RequestEntity(requestUrl, &subtitleResponse)
 	if err != nil {
 		return nil, err
 	}
 
 	return &subtitleResponse.Message.Body.Subtitle, nil
+}
+
+// Search tracks using the given criteria.
+func (m *musixMatch) SearchTrack(request http.SearchRequest) ([]track.TrackList, error) {
+	params := m.paramsWithApiKey()
+	params.Add(config.Query, request.Query)
+	params.Add(config.QueryArtist, request.QueryArtist)
+	params.Add(config.QueryTrack, request.QueryTrack)
+	params.Add(config.Page, fmt.Sprintf("%d", request.Page))
+	params.Add(config.PageSize, fmt.Sprintf("%d", request.PageSize))
+	if request.HasLyrics {
+		params.Add(config.FHasLyrics, "1")
+	} else {
+		params.Add(config.FHasLyrics, "0")
+	}
+
+	var tracksResponse track.Response
+	requestUrl := http.GetURLString(methods.TrackSearch, params)
+	err := http.RequestEntity(requestUrl, &tracksResponse)
+
+	if err != nil {
+		return []track.TrackList{}, err
+	}
+
+	return tracksResponse.Message.Body.Tracks, nil
 }
 
 // Retrieve the url.Values with predefined api key

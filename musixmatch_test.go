@@ -1,6 +1,7 @@
 package musixmatch
 
 import (
+	"github.com/fr05t1k/musixmatch/http"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
@@ -42,4 +43,22 @@ func TestMusixMatch_GetSubtitles(t *testing.T) {
 	subtitle, _ := mm.GetSubtitles(expectedId)
 
 	assert.Nil(t, subtitle)
+}
+
+func TestMusixMatch_SearchTrack(t *testing.T) {
+	mm := New(getApiKey())
+
+	request := http.SearchRequest{
+		Query: "Heathens",
+	}
+	tracks, err := mm.SearchTrack(request)
+
+	assert.Nil(t, err)
+	assert.NotEmpty(t, tracks)
+	trackList := tracks[0]
+
+	assert.NotEmpty(t, trackList.Track.Id)
+	assert.NotEmpty(t, trackList.Track.AlbumId)
+	assert.NotEmpty(t, trackList.Track.Name)
+	assert.NotEmpty(t, trackList.Track.Rating)
 }

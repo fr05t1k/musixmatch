@@ -26,7 +26,7 @@ func getApiKey() string {
 
 func TestGetLyrics(t *testing.T) {
 
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 
 	expectedId := uint32(trackId)
 	lyrics, err := mm.GetLyrics(expectedId)
@@ -36,7 +36,7 @@ func TestGetLyrics(t *testing.T) {
 }
 
 func TestMusixMatch_GetSnippet(t *testing.T) {
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 
 	expectedId := uint32(trackId)
 	snippet, err := mm.GetSnippet(expectedId)
@@ -46,7 +46,7 @@ func TestMusixMatch_GetSnippet(t *testing.T) {
 }
 
 func TestMusixMatch_GetSubtitles(t *testing.T) {
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 
 	expectedId := uint32(trackId)
 	subtitle, _ := mm.GetSubtitles(expectedId)
@@ -55,7 +55,7 @@ func TestMusixMatch_GetSubtitles(t *testing.T) {
 }
 
 func TestMusixMatch_SearchTrack(t *testing.T) {
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 
 	request := http.SearchRequest{
 		Query: "Heathens",
@@ -73,21 +73,21 @@ func TestMusixMatch_SearchTrack(t *testing.T) {
 }
 
 func TestMusixMatch_GetTrack(t *testing.T) {
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 	trackEntity, err := mm.GetTrack(trackId)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, trackEntity)
 }
 
 func TestMusixMatch_GetMatchingTrack(t *testing.T) {
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 	trackEntity, err := mm.GetMatchingTrack("Yesterday", "Beatles")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, trackEntity)
 }
 
 func TestMusixMatch_Request(t *testing.T) {
-	mm := New(getApiKey())
+	mm := NewClient(getApiKey())
 
 	params := url.Values{}
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
@@ -100,4 +100,42 @@ func TestMusixMatch_Request(t *testing.T) {
 	json.Unmarshal(resp, &trackResponse)
 
 	assert.Equal(t, uint16(200), trackResponse.Message.Header.StatusCode)
+}
+
+// Basic usages
+func ExampleNewClient() {
+	client := NewClient("{apikey}")
+
+	lyrics, err := client.GetLyrics(trackId)
+
+	if err != nil {
+		fmt.Println(lyrics.Body)
+	}
+}
+
+// Search track request
+func ExampleClient_SearchTrack() {
+	mm := NewClient(getApiKey())
+
+	request := http.SearchRequest{
+		Query: "Heathens",
+	}
+	tracks, err := mm.SearchTrack(request)
+	if err != nil {
+		fmt.Println(len(tracks))
+	}
+}
+
+func ExampleClient_Request() {
+	mm := NewClient(getApiKey())
+
+	// prepare a method and a query
+	params := url.Values{}
+	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
+	resp, _ := mm.Request(methods.TrackGet, params)
+
+	var trackResponse track.Response
+
+	// Let's hydrate response
+	json.Unmarshal(resp, &trackResponse)
 }

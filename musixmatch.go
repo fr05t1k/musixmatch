@@ -1,3 +1,6 @@
+/*
+Package musixmatch provides a client for using the Musixmatch API.
+*/
 package musixmatch
 
 import (
@@ -13,16 +16,16 @@ import (
 	"net/url"
 )
 
-type musixMatch struct {
+type Client struct {
 	ApiKey string
 }
 
-func New(apiKey string) musixMatch {
-	return musixMatch{ApiKey: apiKey}
+func NewClient(apiKey string) Client {
+	return Client{ApiKey: apiKey}
 }
 
 // Get the lyrics of a track.
-func (m *musixMatch) GetLyrics(trackId uint32) (*lyrics.Lyrics, error) {
+func (m *Client) GetLyrics(trackId uint32) (*lyrics.Lyrics, error) {
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
 
@@ -42,7 +45,7 @@ func (m *musixMatch) GetLyrics(trackId uint32) (*lyrics.Lyrics, error) {
 // A lyrics snippet is a very short representation of a song lyrics.
 // It’s usually twenty to a hundred characters long and it’s calculated
 // extracting a sequence of words from the lyrics.
-func (m *musixMatch) GetSnippet(trackId uint32) (*snippet.Snippet, error) {
+func (m *Client) GetSnippet(trackId uint32) (*snippet.Snippet, error) {
 
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
@@ -60,7 +63,7 @@ func (m *musixMatch) GetSnippet(trackId uint32) (*snippet.Snippet, error) {
 // Retrieve the subtitle of a track.
 //
 // Return the subtitle of a track in LRC or DFXP format.
-func (m *musixMatch) GetSubtitles(trackId uint32) (*subtitle.Subtitle, error) {
+func (m *Client) GetSubtitles(trackId uint32) (*subtitle.Subtitle, error) {
 
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", trackId))
@@ -76,7 +79,7 @@ func (m *musixMatch) GetSubtitles(trackId uint32) (*subtitle.Subtitle, error) {
 }
 
 // Search tracks using the given criteria.
-func (m *musixMatch) SearchTrack(request http.SearchRequest) ([]list.TrackList, error) {
+func (m *Client) SearchTrack(request http.SearchRequest) ([]list.TrackList, error) {
 	params := m.paramsWithApiKey()
 	params.Add(config.Query, request.Query)
 	params.Add(config.QueryArtist, request.QueryArtist)
@@ -101,7 +104,7 @@ func (m *musixMatch) SearchTrack(request http.SearchRequest) ([]list.TrackList, 
 }
 
 // Get a track info from a database: title, artist, instrumental flag and cover art.
-func (m *musixMatch) GetTrack(id uint32) (*track.Track, error) {
+func (m *Client) GetTrack(id uint32) (*track.Track, error) {
 
 	params := m.paramsWithApiKey()
 	params.Add(config.TrackId, fmt.Sprintf("%d", id))
@@ -117,7 +120,7 @@ func (m *musixMatch) GetTrack(id uint32) (*track.Track, error) {
 }
 
 // Match your song against a database.
-func (m *musixMatch) GetMatchingTrack(qTrack string, qArtist string) (*track.Track, error) {
+func (m *Client) GetMatchingTrack(qTrack string, qArtist string) (*track.Track, error) {
 
 	params := m.paramsWithApiKey()
 	params.Add(config.QueryTrack, qTrack)
@@ -134,7 +137,7 @@ func (m *musixMatch) GetMatchingTrack(qTrack string, qArtist string) (*track.Tra
 }
 
 // Make request with your parameters
-func (m *musixMatch) Request(method string, params url.Values) ([]byte, error) {
+func (m *Client) Request(method string, params url.Values) ([]byte, error) {
 	params.Add(config.ApiKey, m.ApiKey)
 
 	requestUrl := http.GetURLString(method, params)
@@ -142,7 +145,7 @@ func (m *musixMatch) Request(method string, params url.Values) ([]byte, error) {
 }
 
 // Retrieve the url.Values with predefined api key
-func (m *musixMatch) paramsWithApiKey() url.Values {
+func (m *Client) paramsWithApiKey() url.Values {
 	params := url.Values{}
 	params.Add(config.ApiKey, m.ApiKey)
 	return params

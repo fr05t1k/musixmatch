@@ -18,7 +18,7 @@ type Body struct {
 }
 
 type Subtitle struct {
-	id                uint32 `json:"subtitle_id"`
+	Id                uint32 `json:"subtitle_id"`
 	Restricted        int8   `json:"restricted"`
 	Body              string `json:"subtitle_body"`
 	Language          string `json:"subtitle_language"`

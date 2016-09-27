@@ -8,10 +8,6 @@ type Response struct {
 	Message Message `json:"message"`
 }
 
-func (r *Response) GetMessage() Message {
-	return r.Message
-}
-
 type Message struct {
 	Body   Body          `json:"body"`
 	Header entity.Header `json:"header"`

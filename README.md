@@ -5,8 +5,6 @@ A Go wrapper for the [MusixMatch API](https://developer.musixmatch.com/)
 
 ##How to use ?
 
-* Declaring the MusixMatch Instance
-
 #### Simple example
 ```go
 package main

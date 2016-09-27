@@ -16,13 +16,8 @@ type Message struct {
 }
 
 type Body struct {
-	Tracks []TrackList `json:"track_list"`
-}
-
-type TrackList struct {
 	Track Track `json:"track"`
 }
-
 type Track struct {
 	Id uint32 `json:"track_id"`
 	// A MusicBrainz track identifier.

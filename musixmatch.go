@@ -7,6 +7,7 @@ import (
 	"github.com/fr05t1k/musixmatch/entity/snippet"
 	"github.com/fr05t1k/musixmatch/entity/subtitle"
 	"github.com/fr05t1k/musixmatch/entity/track"
+	"github.com/fr05t1k/musixmatch/entity/track/list"
 	"github.com/fr05t1k/musixmatch/http"
 	"github.com/fr05t1k/musixmatch/http/methods"
 	"net/url"
@@ -75,7 +76,7 @@ func (m *musixMatch) GetSubtitles(trackId uint32) (*subtitle.Subtitle, error) {
 }
 
 // Search tracks using the given criteria.
-func (m *musixMatch) SearchTrack(request http.SearchRequest) ([]track.TrackList, error) {
+func (m *musixMatch) SearchTrack(request http.SearchRequest) ([]list.TrackList, error) {
 	params := m.paramsWithApiKey()
 	params.Add(config.Query, request.Query)
 	params.Add(config.QueryArtist, request.QueryArtist)
@@ -88,15 +89,56 @@ func (m *musixMatch) SearchTrack(request http.SearchRequest) ([]track.TrackList,
 		params.Add(config.FHasLyrics, "0")
 	}
 
-	var tracksResponse track.Response
+	var tracksResponse list.Response
 	requestUrl := http.GetURLString(methods.TrackSearch, params)
 	err := http.RequestEntity(requestUrl, &tracksResponse)
 
 	if err != nil {
-		return []track.TrackList{}, err
+		return []list.TrackList{}, err
 	}
 
 	return tracksResponse.Message.Body.Tracks, nil
+}
+
+// Get a track info from a database: title, artist, instrumental flag and cover art.
+func (m *musixMatch) GetTrack(id uint32) (*track.Track, error) {
+
+	params := m.paramsWithApiKey()
+	params.Add(config.TrackId, fmt.Sprintf("%d", id))
+
+	var trackResponse track.Response
+	requestUrl := http.GetURLString(methods.TrackGet, params)
+	err := http.RequestEntity(requestUrl, &trackResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &trackResponse.Message.Body.Track, nil
+}
+
+// Match your song against a database.
+func (m *musixMatch) GetMatchingTrack(qTrack string, qArtist string) (*track.Track, error) {
+
+	params := m.paramsWithApiKey()
+	params.Add(config.QueryTrack, qTrack)
+	params.Add(config.QueryArtist, qArtist)
+
+	var trackResponse track.Response
+	requestUrl := http.GetURLString(methods.MatcherTrackGet, params)
+	err := http.RequestEntity(requestUrl, &trackResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &trackResponse.Message.Body.Track, nil
+}
+
+// Make request with your parameters
+func (m *musixMatch) Request(method string, params url.Values) ([]byte, error) {
+	params.Add(config.ApiKey, m.ApiKey)
+
+	requestUrl := http.GetURLString(method, params)
+	return http.SendRequest(requestUrl)
 }
 
 // Retrieve the url.Values with predefined api key

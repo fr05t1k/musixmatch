@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/fr05t1k/musixmatch/config"
 	"io/ioutil"
 	"net/http"
@@ -20,7 +19,6 @@ type SearchRequest struct {
 
 func SendRequest(request string) ([]byte, error) {
 	apiUrl := config.ApiUrl + config.ApiVersion + config.UrlDelim + request
-	fmt.Println(apiUrl)
 	response, err := http.Get(apiUrl)
 	if err != nil {
 		return nil, err

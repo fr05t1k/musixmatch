@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/fr05t1k/musixmatch.svg?branch=master)](https://travis-ci.org/fr05t1k/musixmatch)
 [![GoDoc](https://godoc.org/github.com/fr05t1k/musixmatch?status.svg)](https://godoc.org/github.com/fr05t1k/musixmatch)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fr05t1k/musixmatch)](https://goreportcard.com/report/github.com/fr05t1k/musixmatch)
+[![Coverage Status](https://coveralls.io/repos/github/fr05t1k/musixmatch/badge.svg?branch=master)](https://coveralls.io/github/fr05t1k/musixmatch?branch=master)
 
 A Go wrapper for the [MusixMatch API](https://developer.musixmatch.com/)
 
